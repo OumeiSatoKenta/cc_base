@@ -1,0 +1,24 @@
+Anthropic Skills
+Copyright 2025 Anthropic, PBC
+
+This product includes software developed by Anthropic, PBC.
+https://github.com/anthropics/skills
+
+Licensed under the Apache License, Version 2.0.
+
+The following skills in this directory are derived works based on the
+original skills from the Anthropic Skills repository:
+
+- doc-coauthoring (original: skills/doc-coauthoring)
+- frontend-design (original: skills/frontend-design)
+- internal-comms (original: skills/internal-comms)
+- skill-creator (original: skills/skill-creator)
+- theme-factory (original: skills/theme-factory)
+- web-artifacts-builder (original: skills/web-artifacts-builder)
+- webapp-testing (original: skills/webapp-testing)
+
+Modifications made (2026-02-28):
+- All SKILL.md files have been translated from English to Japanese.
+- Skill descriptions have been adapted for Japanese-language usage context.
+- Some references to auxiliary files (scripts/, examples/, assets/) remain
+  in English as they reference the original repository structure.

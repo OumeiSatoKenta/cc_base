@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(prd-writing)",
+      "Skill(functional-design)",
+      "Skill(architecture-design)",
+      "Skill(repository-structure)",
+      "Skill(development-guidelines)",
+      "Skill(glossary-creation)",
+      "Skill(doc-coauthoring)",
+      "Skill(frontend-design)",
+      "Skill(internal-comms)",
+      "Skill(skill-creator)",
+      "Skill(theme-factory)",
+      "Skill(web-artifacts-builder)",
+      "Skill(webapp-testing)",
+      "Skill(ship-pr)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/validate-commit-message.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
