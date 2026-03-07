@@ -6,13 +6,36 @@
 - VS Code + Dev Containers 拡張機能がインストール済みであること
 - GitHub アカウントがあり、リポジトリへのアクセス権があること
 
-## 1. devcontainer の起動
+## 0. プロジェクトの初期設定（テンプレートから新規作成時のみ）
+
+このリポジトリをテンプレートとして新しいプロジェクトを作成した場合、最初にプロジェクト名の置換を行う。
 
 ```bash
 # リポジトリをクローン
 git clone <repository-url>
-cd cc_base
+cd <project-name>
 
+# プロジェクト名を一括置換（引数でプロジェクト名を指定）
+bash scripts/init-project.sh <project-name>
+```
+
+このスクリプトは以下のファイル内の `cc_base` を指定した名前に置換する:
+
+| ファイル | 置換箇所 |
+|---------|---------|
+| `.devcontainer/devcontainer.json` | `name`, `workspaceFolder` |
+| `.mcp.json` | serena の `--project` パス |
+| `.serena/project.yml` | `project_name` |
+| `.devcontainer/serena_config.yml` | `projects` リスト |
+| `docs/SETUP.md` | ドキュメント内の参照 |
+
+置換後、devcontainer を起動する（次のセクションへ進む）。
+
+> **注意**: 既存プロジェクトをクローンした場合（置換済み）はこのステップは不要。
+
+## 1. devcontainer の起動
+
+```bash
 # VS Code で開く
 code .
 ```
