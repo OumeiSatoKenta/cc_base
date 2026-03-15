@@ -55,6 +55,8 @@ VS Code が `.devcontainer/devcontainer.json` を検出し、「Reopen in Contai
 
 | ツール | 用途 |
 |--------|------|
+| PulseAudio クライアント | macOS ホストからの音声入力転送 |
+| ALSA PulseAudio プラグイン | ALSA → PulseAudio リダイレクト |
 | Claude Code | AI コーディングアシスタント |
 | OpenAI Codex CLI | セカンドオピニオン用AI |
 | uv / uvx | Python パッケージマネージャー（MCP サーバー実行用） |
@@ -178,7 +180,53 @@ aws sts get-caller-identity --profile satoken-readonly
 - **aws-knowledge-mcp-server**: HTTP接続のため、インターネット接続のみ必要
 - **AWS 系 MCP サーバー**: AWS 認証情報の設定が必要（セクション3を参照）
 
-## 5. 開発サーバーの起動
+## 5. Claude Code Voice 機能の設定（macOS ホストのみ）
+
+DevContainer 内で Claude Code の `/voice` を使うには、macOS ホスト側で PulseAudio を起動し、コンテナへ音声を転送する必要がある。
+
+### 5-1. macOS ホスト側のセットアップ（初回のみ）
+
+```bash
+# PulseAudio をインストール
+brew install pulseaudio
+
+# TCP 接続を許可する設定を追加（ローカル・Docker ネットワークのみ許可）
+echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;172.16.0.0/12;192.168.0.0/16;10.0.0.0/8" >> $(brew --prefix)/etc/pulse/default.pa
+```
+
+### 5-2. PulseAudio デーモンの起動（毎回）
+
+DevContainer で Voice 機能を使う前に、macOS 側で PulseAudio を起動する:
+
+```bash
+pulseaudio --exit-idle-time=-1 --daemon
+```
+
+> **注意**: macOS を再起動するたびにこのコマンドの実行が必要。
+
+> **セキュリティ注意**: `auth-anonymous=1` は使用しないこと。認証なしで誰でもマイクにアクセス可能になる。`auth-ip-acl` でローカル・Docker ネットワーク範囲に制限する。
+
+### 5-3. コンテナ側の確認
+
+コンテナ側のセットアップは `install-tools.sh` で自動的に行われる:
+
+- `pulseaudio-utils`, `libsox-fmt-pulse`, `libasound2-plugins` のインストール
+- `~/.asoundrc` による ALSA → PulseAudio リダイレクト設定
+- `containerEnv` の `PULSE_SERVER` / `AUDIODRIVER` 環境変数
+
+接続確認:
+
+```bash
+# PulseAudio 接続テスト
+pactl info
+
+# 録音テスト（1秒間録音）
+rec -t wav /tmp/test.wav trim 0 1
+```
+
+正常であれば Claude Code で `/voice` が使用可能。
+
+## 6. 開発サーバーの起動
 
 ```bash
 npm run dev
@@ -201,6 +249,27 @@ source ~/.local/bin/env
 1. `aws sts get-caller-identity` で認証が通るか確認
 2. `~/.aws/credentials` にプロファイルが正しく設定されているか確認
 3. `AWS_PROFILE=satoken-readonly` のプロファイルが存在するか確認
+
+### Claude Code Voice でエラーが出る
+
+1. macOS ホスト側で PulseAudio が起動しているか確認:
+   ```bash
+   # ホスト側で実行
+   pulseaudio --check && echo "running" || echo "not running"
+   ```
+2. コンテナから接続できるか確認:
+   ```bash
+   pactl info
+   ```
+3. `Cannot open shared library libasound_module_pcm_pulse.so` エラーの場合:
+   ```bash
+   sudo apt-get install -y libasound2-plugins
+   ```
+4. ALSA エラー（`Unknown PCM default`）の場合、`~/.asoundrc` が正しく設定されているか確認:
+   ```bash
+   cat ~/.asoundrc
+   # pcm.!default { type pulse } と ctl.!default { type pulse } があること
+   ```
 
 ### draw.io MCP が見つからない
 

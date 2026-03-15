@@ -1,6 +1,20 @@
 #!/bin/bash
 set -e
 
+# PulseAudio client (for voice input from macOS host)
+echo "[0/7] Installing PulseAudio client..."
+sudo apt-get update -qq && sudo apt-get install -y -qq pulseaudio-utils libsox-fmt-pulse libasound2-plugins
+# Route ALSA through PulseAudio so sox uses PulseAudio by default
+cat <<'ASOUNDRC' > "$HOME/.asoundrc"
+pcm.!default {
+    type pulse
+}
+ctl.!default {
+    type pulse
+}
+ASOUNDRC
+echo "[0/7] PulseAudio client installed."
+
 # Claude Code
 echo "[1/7] Installing Claude Code..."
 curl -fsSL https://claude.ai/install.sh | bash
@@ -54,6 +68,9 @@ echo "[7/7] Setting up Serena config..."
 mkdir -p "$HOME/.serena"
 cp .devcontainer/serena_config.yml "$HOME/.serena/serena_config.yml"
 echo "[6/6] Serena config created."
+
+# Shell aliases
+echo "alias c='claude --allow-dangerously-skip-permissions'" >> "$HOME/.bashrc"
 
 echo "All tools installed successfully."
 
