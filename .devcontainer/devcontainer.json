@@ -10,5 +10,9 @@
     "ghcr.io/devcontainers/features/aws-cli:1": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
+  "containerEnv": {
+    "PULSE_SERVER": "tcp:host.docker.internal:4713",
+    "AUDIODRIVER": "pulseaudio"
+  },
   "postCreateCommand": "bash .devcontainer/install-tools.sh && if [ -f package.json ]; then npm install; fi"
 }
