@@ -1,5 +1,6 @@
 {
   "name": "cc_base",
+  "runArgs": ["--name", "cc_base"],
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
   "workspaceFolder": "/workspaces/cc_base",
   "features": {
