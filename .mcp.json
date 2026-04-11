@@ -66,7 +66,7 @@
     },
     "awslabs.well-architected-security-mcp-server": {
       "command": "uvx",
-      "args": ["--from", "awslabs.well-architected-security-mcp-server", "well-architected-security-mcp-server"],
+      "args": ["--from", "awslabs.well-architected-security-mcp-server", "awslabs.well-architected-security-mcp-server"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       }
