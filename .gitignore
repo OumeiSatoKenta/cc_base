@@ -44,3 +44,10 @@ coverage/
 # yarn.lock
 
 .claude/settings.local.json
+
+# Serena internal cache and memories
+.serena/cache/
+.serena/memories/
+
+# Large installer binaries
+*.pkg
