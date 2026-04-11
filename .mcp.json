@@ -52,7 +52,7 @@
       "args": ["awslabs.aws-api-mcp-server@latest"],
       "env": {
         "AWS_REGION": "ap-northeast-1",
-        "AWS_PROFILE": "satoken-readonly",
+        "AWS_PROFILE": "your-profile",
         "FASTMCP_LOG_LEVEL": "ERROR",
         "READ_OPERATIONS_ONLY": "true"
       }

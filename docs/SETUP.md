@@ -111,23 +111,23 @@ aws configure
 
 ### 3-2. 名前付きプロファイルの設定
 
-`.mcp.json` の `awslabs.aws-api-mcp-server` は `AWS_PROFILE=satoken-readonly` を参照する。このプロファイルを設定する:
+`.mcp.json` の `awslabs.aws-api-mcp-server` は `AWS_PROFILE=your-profile` を参照する。このプロファイルを設定する:
 
 ```bash
-aws configure --profile satoken-readonly
+aws configure --profile your-profile
 ```
 
 または `~/.aws/credentials` を直接編集:
 
 ```ini
-[satoken-readonly]
+[your-profile]
 aws_access_key_id = YOUR_ACCESS_KEY
 aws_secret_access_key = YOUR_SECRET_KEY
 ```
 
 ```ini
 # ~/.aws/config
-[profile satoken-readonly]
+[profile your-profile]
 region = ap-northeast-1
 output = json
 ```
@@ -138,10 +138,10 @@ output = json
 
 ```bash
 # プロファイルを追加
-aws-vault add satoken-readonly
+aws-vault add your-profile
 
 # 認証が通るか確認
-aws-vault exec satoken-readonly -- aws sts get-caller-identity
+aws-vault exec your-profile -- aws sts get-caller-identity
 ```
 
 ### 3-4. 認証の確認
@@ -151,7 +151,7 @@ aws-vault exec satoken-readonly -- aws sts get-caller-identity
 aws sts get-caller-identity
 
 # 名前付きプロファイル
-aws sts get-caller-identity --profile satoken-readonly
+aws sts get-caller-identity --profile your-profile
 ```
 
 ## 4. MCP サーバーの確認
@@ -248,7 +248,7 @@ source ~/.local/bin/env
 
 1. `aws sts get-caller-identity` で認証が通るか確認
 2. `~/.aws/credentials` にプロファイルが正しく設定されているか確認
-3. `AWS_PROFILE=satoken-readonly` のプロファイルが存在するか確認
+3. `AWS_PROFILE=your-profile` のプロファイルが存在するか確認
 
 ### Claude Code Voice でエラーが出る
 

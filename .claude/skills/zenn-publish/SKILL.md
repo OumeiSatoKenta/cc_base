@@ -1,15 +1,15 @@
 ---
 name: zenn-publish
-description: Zenn記事をzenn-satokenリポジトリにコピー・コミット・pushして下書き公開するスキル。「Zennに下書き公開」「記事をpush」「Zennにデプロイ」「記事を公開して」「zenn-satokenにコピー」等のリクエストでトリガーする。
+description: Zenn記事をZennリポジトリにコピー・コミット・pushして下書き公開するスキル。「Zennに下書き公開」「記事をpush」「Zennにデプロイ」「記事を公開して」「Zennにコピー」等のリクエストでトリガーする。
 ---
 
 # Zenn記事デプロイスキル
 
-`zenn/articles/` の記事を zenn-satoken リポジトリにコピーし、コミット・pushしてZennに下書き表示させる。
+`zenn/articles/` の記事を &lt;your-zenn-repo&gt; リポジトリにコピーし、コミット・pushしてZennに下書き表示させる。
 
 ## 前提
 
-- zenn-satoken リポジトリがローカルにclone済み（パスはユーザーに確認する）
+- &lt;your-zenn-repo&gt; リポジトリがローカルにclone済み（パスはユーザーに確認する）
 - Zenn GitHub連携が設定済み（mainへのpushで自動デプロイ）
 - 記事の `published: false` → Zenn上で下書き表示、`published: true` → 公開
 
@@ -24,14 +24,14 @@ description: Zenn記事をzenn-satokenリポジトリにコピー・コミット
 ls zenn/articles/*.md
 ```
 
-### 2. zenn-satokenリポジトリのパス確認
+### 2. &lt;your-zenn-repo&gt;リポジトリのパス確認
 
-初回はユーザーに zenn-satoken リポジトリのローカルパスを確認する。
+初回はユーザーに &lt;your-zenn-repo&gt; リポジトリのローカルパスを確認する。
 典型的なパス:
-- devcontainer環境: `/workspaces/zenn-satoken`
-- ローカル環境: `~/workspace/zenn-satoken` 等
+- devcontainer環境: `/workspaces/&lt;your-zenn-repo&gt;`
+- ローカル環境: `~/workspace/&lt;your-zenn-repo&gt;` 等
 
-### 3. zenn-satokenの最新化
+### 3. &lt;your-zenn-repo&gt;の最新化
 
 ```bash
 cd {ZENN_SATOKEN_PATH}
