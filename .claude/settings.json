@@ -38,7 +38,8 @@
       "Edit(.env.*)",
       "Edit(**/.env)",
       "Edit(**/.env.*)",
-      "Edit(~/.aws/**)"
+      "Edit(~/.aws/**)",
+      "mcp__awslabs_terraform-mcp-server__ExecuteTerraformCommand"
     ],
     "ask": []
   },
