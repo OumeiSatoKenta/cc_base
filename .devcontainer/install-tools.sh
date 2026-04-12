@@ -96,7 +96,16 @@ sudo curl -L -o /usr/local/bin/terragrunt \
   "https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_${ARCH}"
 sudo chmod +x /usr/local/bin/terragrunt
 
-echo "[9/9] IaC tools installed."
+echo "[9/10] IaC tools installed."
+
+# terraform-ls (required for Serena Terraform symbol support)
+echo "[10/10] Installing terraform-ls..."
+TFLSVER=$(curl -s https://api.github.com/repos/hashicorp/terraform-ls/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+curl -fsSL "https://releases.hashicorp.com/terraform-ls/${TFLSVER}/terraform-ls_${TFLSVER}_linux_${ARCH}.zip" \
+  -o /tmp/terraform-ls.zip
+sudo unzip -o /tmp/terraform-ls.zip -d /usr/local/bin/ terraform-ls
+rm /tmp/terraform-ls.zip
+echo "[10/10] terraform-ls installed."
 
 # Shell aliases
 echo "alias c='claude --allow-dangerously-skip-permissions'" >> "$HOME/.bashrc"
@@ -117,4 +126,5 @@ echo "docker compose: $(docker compose version 2>&1 || echo 'not found')"
 echo "Terraform:   $(terraform --version 2>&1 | head -1 || echo 'not found')"
 echo "tflint:      $(tflint --version 2>&1 | head -1 || echo 'not found')"
 echo "Terragrunt:  $(terragrunt --version 2>&1 | head -1 || echo 'not found')"
+echo "terraform-ls: $(terraform-ls version 2>&1 | head -1 || echo 'not found')"
 echo "=========================="
