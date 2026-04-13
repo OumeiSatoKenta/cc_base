@@ -17,25 +17,25 @@
 
 ### AWS関連
 
-AWSサービスに関する質問・設計・トラブルシューティング・実装時は、以下のMCPを自動的に使用する:
+AWSサービスに関する質問・設計・トラブルシューティング・実装時は、`deploy-on-aws` プラグイン（awslabs/agent-plugins）を中核として使用する。devcontainer 起動時に自動インストール済み。
 
-| 用途 | 使用するMCP |
+| 用途 | 使用するツール |
 |---|---|
-| AWSサービスのベストプラクティス・アーキテクチャ・概念 | `aws-knowledge-mcp-server` の `search_documentation`（topic: `general`） |
-| APIリファレンス・SDK・CLI仕様 | `aws-knowledge-mcp-server` の `search_documentation`（topic: `reference_documentation`） |
-| エラー・トラブルシューティング | `aws-knowledge-mcp-server` の `search_documentation`（topic: `troubleshooting`） |
-| 特定ドキュメントページの詳細読み込み | `aws-knowledge-mcp-server` の `read_documentation` |
-| AWS APIの実行・確認（読み取りのみ） | `awslabs.aws-api-mcp-server` の `call_aws` / `suggest_aws_commands` |
-| セキュリティレビュー・Well-Architected | Well-Architected Security MCP |
+| AWSサービスのベストプラクティス・アーキテクチャ・トラブルシューティング | `deploy-on-aws` プラグイン同梱の `awsknowledge` MCP |
+| AWS 料金見積もり | `deploy-on-aws` 同梱の `awspricing` MCP |
+| Terraform / IaC プロバイダドキュメント・構成生成 | `deploy-on-aws` 同梱の `awsiac` MCP |
+| AWS 構成図（draw.io XML / AWS4 アイコン）の生成 | `deploy-on-aws` 同梱の `aws-architecture-diagram` スキル |
+| 汎用 draw.io 図（非AWS、Mermaid 等） | 既存 `drawio` MCP |
+| AWS API の実行・確認（読み取りのみ） | `awslabs.aws-api-mcp-server` の `call_aws` / `suggest_aws_commands` |
+| セキュリティレビュー・Well-Architected | `awslabs.well-architected-security-mcp-server` |
 
 ### Terraform / IaC関連
 
-Terraform や Terragrunt によるインフラ構築・設計時は `awslabs.terraform-mcp-server` を自動的に使用する:
+Terraform や Terragrunt によるインフラ構築・設計時は `deploy-on-aws` プラグインの `awsiac` MCP と `deploy` スキルを使用する:
 
-- まず `terraform_development_workflow` リソースと `terraform_aws_best_practices` リソースを参照
-- AWS-IA 専用モジュールを `SearchSpecificAwsIaModules` で確認
-- AWSCC プロバイダを優先（`SearchAwsccProviderDocs`）、なければ AWS プロバイダ（`SearchAwsProviderDocs`）にフォールバック
-- コードの検証には `ExecuteTerraformCommand`（validate → init → plan）と `RunCheckovScan` を使用
+- `awsiac` MCP で AWS / AWSCC プロバイダドキュメントとモジュール検索
+- `deploy` スキルで IaC 生成・コスト見積もり
+- コードの検証には `terraform validate` → `tflint` → `terraform plan`（要 AWS 認証）を使用
 
 ### TiDB関連
 

@@ -19,7 +19,7 @@ cd <project-name>
 bash scripts/init-project.sh <project-name>
 ```
 
-このスクリプトは以下のファイル内の `cc_base` を指定した名前に置換する:
+このスクリプトは以下のファイル内の `cc_aws_portfolio_plugin` を指定した名前に置換する:
 
 | ファイル | 置換箇所 |
 |---------|---------|
@@ -166,25 +166,54 @@ aws sts get-caller-identity --profile your-profile
 | **context7** | `npx` (stdio) | 外部ライブラリの最新ドキュメント取得 |
 | **codex** | `codex` (stdio) | セカンドオピニオン取得 |
 | **drawio** | `npx` (stdio) | Draw.io 図表の生成・編集 |
-| **aws-knowledge-mcp-server** | HTTP | AWS ドキュメント検索（リモートサービス） |
-| **awslabs.aws-documentation-mcp-server** | `uvx` (stdio) | AWS 公式ドキュメント読み取り |
 | **awslabs.aws-api-mcp-server** | `uvx` (stdio) | AWS API 呼び出し（読み取り専用） |
-| **awslabs.terraform-mcp-server** | `uvx` (stdio) | Terraform プロバイダードキュメント検索 |
 | **awslabs.well-architected-security-mcp-server** | `uvx` (stdio) | Well-Architected セキュリティレビュー |
 
 ### 依存関係
 
 - **npx 系**（context7, drawio）: Node.js があれば動作する（devcontainer で自動インストール済み）
-- **uvx 系**（serena, aws-documentation, aws-api, terraform, well-architected-security）: uv が必要（install-tools.sh で自動インストール済み）
+- **uvx 系**（serena, aws-api, well-architected-security）: uv が必要（install-tools.sh で自動インストール済み）
 - **codex**: OpenAI Codex CLI が必要（install-tools.sh で自動インストール済み）
-- **aws-knowledge-mcp-server**: HTTP接続のため、インターネット接続のみ必要
 - **AWS 系 MCP サーバー**: AWS 認証情報の設定が必要（セクション3を参照）
+- **deploy-on-aws プラグイン**: devcontainer 起動時に自動インストール済み（セクション5を参照）
 
-## 5. Claude Code Voice 機能の設定（macOS ホストのみ）
+## 5. agent-plugins for AWS（自動インストール済み）
+
+本テンプレートは AWS Labs の `deploy-on-aws` プラグイン（[awslabs/agent-plugins](https://github.com/awslabs/agent-plugins)）を AWS 系の中核ツールとして使用する。
+
+devcontainer の初回起動時に `install-tools.sh` で自動インストールされるため、手動での操作は不要。
+
+### 含まれるツール
+
+| 種別 | 名前 | 用途 |
+|------|------|------|
+| Skill | `deploy` | IaC 生成・コスト見積もり |
+| Skill | `aws-architecture-diagram` | AWS4 アイコン付き draw.io XML 構成図生成 |
+| MCP | `awsknowledge` | AWS アーキテクチャ・ベストプラクティス |
+| MCP | `awspricing` | AWS 料金情報 |
+| MCP | `awsiac` | IaC プロバイダドキュメント・構成生成 |
+
+### 手動で再インストールする場合
+
+```bash
+# マーケットプレイスが未登録の場合は先に追加
+claude plugin marketplace add awslabs/agent-plugins
+claude plugin install deploy-on-aws@agent-plugins-for-aws --scope user
+```
+
+必要に応じて他の agent-plugins（`aws-serverless`, `databases-on-aws` 等）も追加可能:
+
+```bash
+# 利用可能なプラグイン一覧は GitHub で確認
+# https://github.com/awslabs/agent-plugins
+claude plugin install <plugin-name>@agent-plugins-for-aws --scope user
+```
+
+## 6. Claude Code Voice 機能の設定（macOS ホストのみ）
 
 DevContainer 内で Claude Code の `/voice` を使うには、macOS ホスト側で PulseAudio を起動し、コンテナへ音声を転送する必要がある。
 
-### 5-1. macOS ホスト側のセットアップ（初回のみ）
+### 6-1. macOS ホスト側のセットアップ（初回のみ）
 
 ```bash
 # PulseAudio をインストール
@@ -194,7 +223,7 @@ brew install pulseaudio
 echo "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;172.16.0.0/12;192.168.0.0/16;10.0.0.0/8" >> $(brew --prefix)/etc/pulse/default.pa
 ```
 
-### 5-2. PulseAudio デーモンの起動（毎回）
+### 6-2. PulseAudio デーモンの起動（毎回）
 
 DevContainer で Voice 機能を使う前に、macOS 側で PulseAudio を起動する:
 
@@ -206,7 +235,7 @@ pulseaudio --exit-idle-time=-1 --daemon
 
 > **セキュリティ注意**: `auth-anonymous=1` は使用しないこと。認証なしで誰でもマイクにアクセス可能になる。`auth-ip-acl` でローカル・Docker ネットワーク範囲に制限する。
 
-### 5-3. コンテナ側の確認
+### 6-3. コンテナ側の確認
 
 コンテナ側のセットアップは `install-tools.sh` で自動的に行われる:
 
@@ -226,7 +255,7 @@ rec -t wav /tmp/test.wav trim 0 1
 
 正常であれば Claude Code で `/voice` が使用可能。
 
-## 6. 開発サーバーの起動
+## 7. 開発サーバーの起動
 
 ```bash
 npm run dev
