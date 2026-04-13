@@ -6,11 +6,12 @@
       "args": [
         "--from",
         "git+https://github.com/oraios/serena",
-        "serena-mcp-server",
+        "serena",
+        "start-mcp-server",
         "--context",
-        "ide-assistant",
+        "claude-code",
         "--project",
-        "/workspaces/cc_base"
+        "/workspaces/cc_aws_portfolio_plugin"
       ],
       "env": {}
     },
@@ -35,18 +36,6 @@
       "command": "npx",
       "args": ["@drawio/mcp"]
     },
-    "aws-knowledge-mcp-server": {
-      "url": "https://knowledge-mcp.global.api.aws",
-      "type": "http"
-    },
-    "awslabs.aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_DOCUMENTATION_PARTITION": "aws"
-      }
-    },
     "awslabs.aws-api-mcp-server": {
       "command": "uvx",
       "args": ["awslabs.aws-api-mcp-server@latest"],
@@ -55,13 +44,6 @@
         "AWS_PROFILE": "your-profile",
         "FASTMCP_LOG_LEVEL": "ERROR",
         "READ_OPERATIONS_ONLY": "true"
-      }
-    },
-    "awslabs.terraform-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.terraform-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
       }
     },
     "awslabs.well-architected-security-mcp-server": {
