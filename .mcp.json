@@ -11,7 +11,7 @@
         "--context",
         "claude-code",
         "--project",
-        "/workspaces/cc_aws_portfolio_plugin"
+        "/workspaces/cc_base"
       ],
       "env": {}
     },

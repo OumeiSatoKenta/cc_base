@@ -19,7 +19,7 @@ cd <project-name>
 bash scripts/init-project.sh <project-name>
 ```
 
-このスクリプトは以下のファイル内の `cc_aws_portfolio_plugin` を指定した名前に置換する:
+このスクリプトは以下のファイル内の `cc_base` を指定した名前に置換する:
 
 | ファイル | 置換箇所 |
 |---------|---------|

@@ -6,7 +6,16 @@ set -euo pipefail
 # ベースリポジトリのプロジェクト名・パスを一括置換する初期設定スクリプト
 # ============================================================
 
-CURRENT_NAME="cc_base"
+# --- プロジェクトルートを特定 ---
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# --- 現在のプロジェクト名を自動検出 ---
+CURRENT_NAME=$(grep -m1 '^project_name:' "$PROJECT_ROOT/.serena/project.yml" | sed 's/^project_name:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}/\1/')
+if [ -z "$CURRENT_NAME" ]; then
+  echo "エラー: .serena/project.yml から現在のプロジェクト名を検出できませんでした。" >&2
+  exit 1
+fi
 
 # --- 引数 or 対話入力でプロジェクト名を取得 ---
 if [ $# -ge 1 ]; then
@@ -30,10 +39,6 @@ if [ "$NEW_NAME" = "$CURRENT_NAME" ]; then
   echo "プロジェクト名が変更されていません。処理をスキップします。"
   exit 0
 fi
-
-# --- プロジェクトルートを特定 ---
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "=========================================="
 echo "プロジェクト初期設定"

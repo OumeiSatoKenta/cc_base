@@ -122,4 +122,4 @@ symbol_info_budget: 10
 
 # the list of registered project paths (updated automatically).
 projects:
-- /workspaces/cc_aws_portfolio_plugin
+- /workspaces/cc_base

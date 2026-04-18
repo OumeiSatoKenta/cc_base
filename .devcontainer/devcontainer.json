@@ -1,8 +1,8 @@
 {
-  "name": "cc_aws_portfolio_plugin",
-  "runArgs": ["--name", "cc_aws_portfolio_plugin"],
+  "name": "cc_base",
+  "runArgs": ["--name", "cc_base"],
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
-  "workspaceFolder": "/workspaces/cc_aws_portfolio_plugin",
+  "workspaceFolder": "/workspaces/cc_base",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
