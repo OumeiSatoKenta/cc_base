@@ -1,8 +1,8 @@
 {
-  "name": "cc_base",
-  "runArgs": ["--name", "cc_base"],
+  "name": "cc_langfuse",
+  "runArgs": ["--name", "cc_langfuse"],
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
-  "workspaceFolder": "/workspaces/cc_base",
+  "workspaceFolder": "/workspaces/cc_langfuse",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"

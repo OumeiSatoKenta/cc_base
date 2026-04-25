@@ -11,7 +11,7 @@
         "--context",
         "claude-code",
         "--project",
-        "/workspaces/cc_base"
+        "/workspaces/cc_langfuse"
       ],
       "env": {}
     },
