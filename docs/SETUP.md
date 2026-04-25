@@ -19,7 +19,7 @@ cd <project-name>
 bash scripts/init-project.sh <project-name>
 ```
 
-このスクリプトは以下のファイル内の `cc_base` を指定した名前に置換する:
+このスクリプトは以下のファイル内の `cc_langfuse` を指定した名前に置換する:
 
 | ファイル | 置換箇所 |
 |---------|---------|
@@ -255,7 +255,64 @@ rec -t wav /tmp/test.wav trim 0 1
 
 正常であれば Claude Code で `/voice` が使用可能。
 
-## 7. 開発サーバーの起動
+## 7. Langfuse オブザーバビリティの設定（任意）
+
+Claude Code のツール呼び出しを [Langfuse](https://langfuse.com) に送信し、セッション単位でトレースを可視化できる。Hobby プラン（無料）で月 50,000 観測ユニットまで利用可能。
+
+設定しなくても Claude Code の動作には一切影響しない。
+
+### 7-1. Langfuse Cloud アカウントの作成
+
+1. [https://cloud.langfuse.com](https://cloud.langfuse.com) にアクセス
+2. 「Sign Up」からアカウントを作成
+3. プラン選択で **Hobby**（無料）を選ぶ
+
+### 7-2. プロジェクトと API キーの取得
+
+1. ログイン後、「New Project」でプロジェクトを作成（名前は任意、例: `claude-code`）
+2. 左メニュー **Settings → API Keys** を開く
+3. 表示される以下の3つの値を控える:
+   - **Public Key** (`pk-lf-...`)
+   - **Secret Key** (`sk-lf-...`)
+   - **Host** (`https://cloud.langfuse.com`)
+
+### 7-3. クレデンシャルファイルの作成
+
+`~/.claude/.env.langfuse` を作成し、取得した値を記入する:
+
+```bash
+mkdir -p ~/.claude
+cat > ~/.claude/.env.langfuse << 'EOF'
+LANGFUSE_PUBLIC_KEY=pk-lf-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+LANGFUSE_SECRET_KEY=sk-lf-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+LANGFUSE_HOST=https://cloud.langfuse.com
+EOF
+chmod 600 ~/.claude/.env.langfuse
+```
+
+> **注意**: このファイルはプロジェクトディレクトリではなく `~/.claude/` に置くこと。プロジェクトルートに置いても動作しない。
+
+### 7-4. 動作確認
+
+1. Claude Code セッションを再起動する（フックスクリプトはツール呼び出し時に設定ファイルを読み込むため、既存セッションでは反映されない）
+   - Claude Code を起動中の場合は `/exit` で終了し、再度 `claude` コマンドで起動する
+2. 任意のツールを使用する（例: 「このファイルを読んで」と依頼してファイル読み取りを発生させる）
+3. Langfuse ダッシュボード（[https://cloud.langfuse.com](https://cloud.langfuse.com)）を開く
+4. 左メニュー **Tracing → Traces** にセッションのトレースが表示されていれば成功
+
+各トレースにはツール名・入力サマリー・実行時間がスパンとして記録される。
+
+### 7-5. 無効化
+
+Langfuse 連携を停止するには `~/.claude/.env.langfuse` を削除またはリネームする:
+
+```bash
+mv ~/.claude/.env.langfuse ~/.claude/.env.langfuse.disabled
+```
+
+次回の Claude Code セッション起動からトレース送信が停止する。再度有効にするにはファイル名を元に戻す。
+
+## 8. 開発サーバーの起動
 
 ```bash
 npm run dev
@@ -299,6 +356,22 @@ source ~/.local/bin/env
    cat ~/.asoundrc
    # pcm.!default { type pulse } と ctl.!default { type pulse } があること
    ```
+
+### Langfuse にトレースが表示されない
+
+1. クレデンシャルファイルが正しいパスに存在するか確認:
+   ```bash
+   ls -la ~/.claude/.env.langfuse
+   ```
+2. 3つの変数（`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST`）が全て設定されているか確認
+3. Claude Code セッションを再起動したか確認（設定変更は再起動後に反映）
+4. スクリプトを手動テストする（プロジェクトルートで実行）:
+   ```bash
+   echo '{"hook_event_name":"SessionStart","session_id":"test-123","model":"opus"}' | \
+     bash "$(git rev-parse --show-toplevel)/.claude/hooks/langfuse-logger.sh"
+   echo $?  # 0 であること
+   ```
+5. Langfuse ダッシュボードでプロジェクトが正しいか確認（API キーとプロジェクトは紐づいている）
 
 ### draw.io MCP が見つからない
 
