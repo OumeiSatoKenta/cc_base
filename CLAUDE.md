@@ -17,17 +17,20 @@
 
 ### AWS関連
 
-AWSサービスに関する質問・設計・トラブルシューティング・実装時は、`deploy-on-aws` プラグイン（awslabs/agent-plugins）を中核として使用する。devcontainer 起動時に自動インストール済み。
+AWSサービスに関する質問・設計・トラブルシューティング・実装時は、マネージド版 **AWS MCP Server**（`.mcp.json` の `aws-mcp`。`mcp-proxy-for-aws` 経由・SigV4・read-only）を中核として使用する。これは旧 `aws-api-mcp-server` と `awsknowledge` MCP を統合したもの（2026-05-06 GA）。料金見積り・IaC・構成図などの特化用途は `deploy-on-aws` プラグイン（awslabs/agent-plugins。devcontainer 起動時に自動インストール）を併用する。
 
 | 用途 | 使用するツール |
 |---|---|
-| AWSサービスのベストプラクティス・アーキテクチャ・トラブルシューティング | `deploy-on-aws` プラグイン同梱の `awsknowledge` MCP |
+| AWS API の実行・確認（読み取りのみ） | マネージド **`aws-mcp`** の `call_aws`（`.mcp.json` で `--read-only` 指定済み。書き込み系ツールは無効） |
+| AWSサービスのベストプラクティス・アーキテクチャ・ドキュメント検索 | マネージド **`aws-mcp`** の `search_documentation` / `read_documentation`（旧 `awsknowledge` を統合） |
+| サンドボックスでのスクリプト実行 | マネージド **`aws-mcp`** の `run_script`（ローカルFS・シェルには非接触） |
 | AWS 料金見積もり | `deploy-on-aws` 同梱の `awspricing` MCP |
 | Terraform / IaC プロバイダドキュメント・構成生成 | `deploy-on-aws` 同梱の `awsiac` MCP |
 | AWS 構成図（draw.io XML / AWS4 アイコン）の生成 | `deploy-on-aws` 同梱の `aws-architecture-diagram` スキル |
 | 汎用 draw.io 図（非AWS、Mermaid 等） | 既存 `drawio` MCP |
-| AWS API の実行・確認（読み取りのみ） | `awslabs.aws-api-mcp-server` の `call_aws` / `suggest_aws_commands` |
-| セキュリティレビュー・Well-Architected | `awslabs.well-architected-security-mcp-server` |
+| セキュリティレビュー・Well-Architected | `awslabs.well-architected-security-mcp-server`（統合対象外・存置） |
+
+> **移行メモ（2026-07）**: マネージド AWS MCP Server の GA に伴い、旧 `awslabs.aws-api-mcp-server` と `awsknowledge` MCP は `aws-mcp` に統合・置換済み。ツール重複はエージェントを混乱させ精度を落とすため、旧2サーバーは併用しないこと。接続は SigV4（`uvx mcp-proxy-for-aws`）＋ `aws login` 認証で、`.mcp.json` の `AWS_PROFILE`（現在は `your-profile` プレースホルダ）を実プロファイルに置換する必要がある。read-only を外す場合は OAuth（`claude mcp add aws-mcp https://aws-mcp.us-east-1.api.aws/mcp --transport http`）も選択可。
 
 ### Terraform / IaC関連
 
